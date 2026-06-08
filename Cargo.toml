@@ -2,5 +2,10 @@
 name = "numutil"
 version = "0.1.0"
 edition = "2024"
+license-file = "LICENSE"
+description = "Utility for working with Rust's core numeric types. Convenient and fast conversions between core types and other core types, core types and bytes, and vectors of core types and bytes"
+homepage = "https://github.com/brodiealexander/numutil-rs"
+repository = "https://github.com/brodiealexander/numutil-rs"
+readme = "README.md"
 
 [dependencies]
