@@ -17,7 +17,7 @@ pub fn init_tracing() {
 
 // pub mod ext;
 // pub mod generated;
-
+pub use numutil_proc_macro::make_generic_num;
 // make_generic_num!(GenericNumContainerName, (u8, u16), hello);
 
 #[cfg(test)]
