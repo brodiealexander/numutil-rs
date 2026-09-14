@@ -58,6 +58,7 @@ pub trait Num:
     // + Neg
     + PartialOrd
     + PartialEq // + Ord
+    + Round
 {
     fn max(&self, other: &Self) -> Self {
         match self.partial_cmp(other) {
@@ -96,7 +97,8 @@ impl<
         + RemAssign<Self>
         // + Neg
         + PartialOrd
-        + PartialEq, // + Ord,
+        + PartialEq // + Ord,
+        + Round,
 > Num for T
 where
     Vec<T>: VecByteConversion,
@@ -182,6 +184,79 @@ impl<
 > LossyUnsizedFromPrimitive for T
 {
 }
+
+macro_rules! autoimpl {
+    ([$trait:ty] for ($x:ty)) => (
+        impl $trait for $x {}
+    );
+    // ($trait:ty, ($constraint:expr) for ($x:ty)) => (
+    //     impl $trait for $x : $constraint {}
+    // );
+    ([$trait:ty] for ($x:ty, $($y:ty),+)) => (
+        autoimpl!([$trait]  for ($x));
+        autoimpl!([$trait] for ($($y),+));
+    )
+}
+// $(($constraint:expr))?
+// $(($constraint:expr))?
+//$(($constraint:expr))?
+// autoimpl!(
+//     usize, isize, i8, u8, i16, i32, i64, i128, u16, u32, u64, u128, f32, f64
+// );
+autoimpl!([Round] for (
+    usize, isize, i8, u8, i16, i32, i64, i128, u16, u32, u64, u128
+));
+pub trait Round: Sized {
+    fn round(self) -> Self {
+        self
+    }
+    fn floor(self) -> Self {
+        self
+    }
+    fn ceil(self) -> Self {
+        self
+    }
+    fn round_towards_zero(self) -> Self {
+        self.round()
+    }
+}
+impl Round for f32 {
+    fn round(self) -> Self {
+        self.round()
+    }
+    fn round_towards_zero(self) -> Self {
+        if self.is_sign_negative() {
+            self.ceil()
+        } else {
+            self.floor()
+        }
+    }
+    fn ceil(self) -> Self {
+        self.ceil()
+    }
+    fn floor(self) -> Self {
+        self.floor()
+    }
+}
+impl Round for f64 {
+    fn round(self) -> Self {
+        self.round()
+    }
+    fn round_towards_zero(self) -> Self {
+        if self.is_sign_negative() {
+            self.ceil()
+        } else {
+            self.floor()
+        }
+    }
+    fn ceil(self) -> Self {
+        self.ceil()
+    }
+    fn floor(self) -> Self {
+        self.floor()
+    }
+}
+// impl Round for u8 {}
 
 pub trait ConstOne {
     const ONE: Self;
